@@ -112,7 +112,6 @@ myApp.controller(
 myApp.controller(
   "todoController",
   function ($scope, $http, $window, $location) {
-    
     var apiUrl = "http://10.21.81.151:8000/api/todo/";
 
     var Params = { loginid: loginId.toString() };
@@ -120,10 +119,9 @@ myApp.controller(
     $scope.todolist = [];
 
     $http.get(apiUrl, { params: Params }).then(function (response) {
-    
       const storedTasks = response.data.task;
-      if(storedTasks){
-        $scope.todolist = storedTasks
+      if (storedTasks) {
+        $scope.todolist = storedTasks;
       }
 
       console.log($scope.todolist);
@@ -168,7 +166,7 @@ myApp.controller(
       if (task.status) {
         task.checkedTime = new Date().toLocaleString();
       } else {
-        task.checkedTime = "";  
+        task.checkedTime = "";
       }
     };
 
@@ -190,28 +188,28 @@ myApp.controller(
       }
     };
 
-      $scope.delete = function () {
-        var deletedTasks = [];
-        angular.forEach($scope.todolist, function (task) {
-          if (task.status) {
-            if (task.status != "completed") {
-              task.status = "deleted";
-              
-              $http.delete(apiUrl, {data : task})
-              .then(function(response){
+    $scope.delete = function () {
+      var deletedTasks = [];
+      angular.forEach($scope.todolist, function (task) {
+        if (task.status) {
+          if (task.status != "completed") {
+            task.status = "deleted";
+
+            $http
+              .delete(apiUrl, { data: task })
+              .then(function (response) {
                 console.log("deleted");
               })
-              .catch(function(error){
-                console.log("error", error)
+              .catch(function (error) {
+                console.log("error", error);
               });
-              
-            }
           }
-          deletedTasks.push(task);
-        });
-        $scope.todolist = deletedTasks;
-        $scope.displayTasks();
-      };
+        }
+        deletedTasks.push(task);
+      });
+      $scope.todolist = deletedTasks;
+      $scope.displayTasks();
+    };
 
     $scope.complete = function () {
       var completedTasks = [];
@@ -220,15 +218,16 @@ myApp.controller(
           if (task.status != "deleted") {
             task.status = "completed";
 
-             $http.delete(apiUrl, {data : task})
-              .then(function(response){
+            $http
+              .delete(apiUrl, { data: task })
+              .then(function (response) {
                 console.log("completed");
               })
-              .catch(function(error){
-                console.log("error", error)
+              .catch(function (error) {
+                console.log("error", error);
               });
-            }
           }
+        }
         completedTasks.push(task);
       });
       $scope.todolist = completedTasks;
