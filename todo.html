@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://f  onts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Calligraffitti&family=Inter:wght@500&family=Lobster+Two&family=Oswald&family=Poppins:wght@200;600&family=Sofia&family=Sofia+Sans+Condensed&display=swap" rel="stylesheet">
+  <title>Document</title>
+</head>
+<body>
+<div class="container">
+  <h2>To-do list</h2>
+  <div class="listdiv">
+    <form ng-submit="addTask()">
+      <input
+        type="text"
+        ng-model="task"
+        placeholder="Enter Task"
+        id="taskInput"
+      />
+      <input type="submit" value="Add Task" id="addTsk"/>
+    </form>
+    <br />
+    <div ng-repeat="task in filteredTasks track by $index">
+      <input
+        type="checkbox"
+        ng-model="task.status"
+        ng-checked="task.status"
+        ng-click="toggleStatus(task)"
+        id="t"
+      />
+      <span class="task" ng-hide="task.editMode">{{task.taskText}}</span>
+      <span ng-show="task.editMode">
+        <input
+          type="text"
+          ng-model="task.updatedText"
+          placeholder="{{task.taskText}}"
+          class="edtInp"
+        />
+        <button ng-click="edit(task)" class="svBtn">Save</button>
+      </span>
+      <span class="date" ng-if="task.status" ng-show="task.status"
+        >Completed at: {{task.checkedTime}}</span
+      >
+      <button
+        ng-click="task.editMode = !task.editMode"
+        ng-hide="task.editMode || task.status"
+        class="edtButton"
+      >
+        Edit
+      </button>
+    </div>
+    <div class="buttonDiv">
+      <button ng-click="delete()" class="delButton">Delete</button>
+      <button ng-click="complete()" class="comButton">Completed</button>
+      <button ng-click="logOut()" class="logButton">Log Out</button>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
