@@ -8,22 +8,22 @@ myApp.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
   $stateProvider
     .state("login", {
       url: "/login",
-      templateUrl: "/login.html",
+      templateUrl: "login.html",
       controller: "loginController",
     })
     .state("todo", {
       url: "/todo",
-      templateUrl: "/todo.html",
+      templateUrl: "todo.html",
       controller: "todoController",
     })
     .state("/", {
       url: "/",
-      templateUrl: "/register.html",
+      templateUrl: "register.html",
       controller: "registerController",
     })
     .state("register", {
       url: "/register",
-      templateUrl: "/register.html",
+      templateUrl: "register.html",
       controller: "registerController",
     });
 
@@ -54,7 +54,7 @@ myApp.controller(
         $scope.formData = {};
 
         $http
-          .post("http://10.21.81.151:8000/api/register/", userData)
+          .post("http://10.21.80.57:8000/api/register/", userData)
           .then(function (response) {
             var register = response.data;
             console.log(register);
@@ -90,7 +90,7 @@ myApp.controller(
       $scope.loginData = {};
 
       $http
-        .post("http://10.21.81.151:8000/api/login/", userLogin)
+        .post("http://10.21.80.57:8000/api/login/", userLogin)
         .then(function (response) {
           var register = response.data;
           loginId = register.id;
@@ -112,7 +112,7 @@ myApp.controller(
 myApp.controller(
   "todoController",
   function ($scope, $http, $window, $location) {
-    var apiUrl = "http://10.21.81.151:8000/api/todo/";
+    var apiUrl = "http://10.21.80.57:8000/api/todo/";
 
     var Params = { loginid: loginId.toString() };
 
@@ -171,22 +171,54 @@ myApp.controller(
     };
 
     $scope.edit = function (task) {
+      if ($scope.editingTask) {
+        $scope.cancelEdit($scope.editingTask);
+      }
+
       task.editMode = true;
-      if (task.update) {
+      $scope.editingTask = task;
+      task.update = task.taskText;
+    };
+
+    $scope.cancelEdit = function (task) {
+      task.editMode = false;
+      task.taskText = task.update;
+      $scope.editingTask = null;
+    };
+
+    $scope.saveEdit = function (task) {
+      if(task.update){
         task.taskText = task.update;
-        $http
-          .put(apiUrl, task)
-          .then(function (response) {
-            console.log("Task updated successfully:", response.data);
-            $scope.displayTasks();
-          })
-          .catch(function (error) {
-            console.log("error", error);
-          });
-      } else {
+      $http
+        .put(apiUrl, task)
+        .then(function (response) {
+          console.log("Task updated successfully:", response.data);
+          $scope.displayTasks();
+        })
+        .catch(function (error) {
+          console.log("error", error);
+        });
+      }else {
         $scope.displayTasks();
       }
     };
+
+    //   task.editMode = true;
+    //   if (task.update) {
+    //     task.taskText = task.update;
+    //     $http
+    //       .put(apiUrl, task)
+    //       .then(function (response) {
+    //         console.log("Task updated successfully:", response.data);
+    //         $scope.displayTasks();
+    //       })
+    //       .catch(function (error) {
+    //         console.log("error", error);
+    //       });
+    //   } else {
+    //     $scope.displayTasks();
+    //   }
+    // };
 
     $scope.delete = function () {
       var deletedTasks = [];
@@ -236,7 +268,7 @@ myApp.controller(
 
     $scope.logOut = function () {
       $http
-        .post("http://10.21.81.151:8000/api/logout/", { loginid: loginId })
+        .post("http://10.21.80.57:8000/api/logout/", { loginid: loginId })
         .then(function (response) {
           var register = response.data.message;
           console.log(register);

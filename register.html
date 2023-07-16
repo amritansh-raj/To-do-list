@@ -24,9 +24,10 @@
                           class="form-control"
                           ng-model="formData.name"
                           placeholder="name@example.com"
+                          id = "username"
                           required
                         />
-                        <label for="floatingInput">Full name</label>
+                        <label for="username">Full name</label>
                       </div>
                       <div class="form-floating mb-3">
                         <input
@@ -38,19 +39,19 @@
                           id="email"
                           required
                         />
-                        <label for="floatingInput">Email</label>
+                        <label for="email">Email</label>
                       </div>
                       <div class="form-floating mb-3">
                         <input
                           type="tel"
                           class="form-control"
                           placeholder="name@example.com"
-                          title="Error Message"
                           pattern="\s*[1-9]{1}[0-9]{9}\s*"
                           ng-model="formData.phno"
+                          id="phNo"
                           required
                         />
-                        <label for="floatingInput">Phone no</label>
+                        <label for="phNo">Phone no</label>
                       </div>
                       <div class="form-floating mb-3">
                         <input
@@ -58,9 +59,10 @@
                           class="form-control"
                           placeholder="name@example.com"
                           ng-model="formData.password"
+                          id="pass1"
                           required
                         />
-                        <label for="floatingInput">Password</label>
+                        <label for="pass1">Password</label>
                       </div>
                       <div class="form-floating mb-3">
                         <input
@@ -68,9 +70,10 @@
                           class="form-control"
                           placeholder="Password"
                           ng-model="formData.password2"
+                          id = "pass2"
                           required
                         />
-                        <label for="floatingInput">Confirm Password</label>
+                        <label for="pass2">Confirm Password</label>
                       </div>
                       <div
                         class="d-flex justify-content-center mx-4 mb-3 mb-lg-4"

@@ -1,66 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://f  onts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Calligraffitti&family=Inter:wght@500&family=Lobster+Two&family=Oswald&family=Poppins:wght@200;600&family=Sofia&family=Sofia+Sans+Condensed&display=swap"
-      rel="stylesheet"
-    />
-    <title>Document</title>
-  </head>
-  <body>
-    <div class="container">
-      <h2>To-do list</h2>
-      <div class="listdiv">
-        <form ng-submit="addTask()">
-          <input
-            type="text"
-            ng-model="task"
-            placeholder="Enter Task"
-            id="taskInput"
-          />
-          <input type="submit" value="Add Task" id="addTsk" />
-        </form>
-        <br />
-        <div ng-repeat="task in filteredTasks track by $index">
-          <input
-            type="checkbox"
-            ng-model="task.status"
-            ng-checked="task.status"
-            ng-click="toggleStatus(task)"
-            id="t"
-          />
-          <span class="task" ng-hide="task.editMode">{{task.taskText}}</span>
-          <span ng-show="task.editMode">
-            <input
-              type="text"
-              ng-model="task.update"
-              placeholder="{{task.taskText}}"
-              class="edtInp"
-            />
-            <button ng-click="edit(task)" class="svBtn">Save</button>
-          </span>
-          <span class="date" ng-if="task.status" ng-show="task.status"
-            >Completed at: {{task.checkedTime}}</span
-          >
-          <button
-            ng-click="task.editMode = !task.editMode"
-            ng-hide="task.editMode || task.status"
-            class="edtButton"
-          >
-            Edit
-          </button>
-        </div>
-        <div class="buttonDiv">
-          <button ng-click="delete()" class="delButton">Delete</button>
-          <button ng-click="complete()" class="comButton">Completed</button>
-          <button ng-click="logOut()" class="logButton">Log Out</button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <title>Document</title>
+  <style src="style.css"></style>
+</head>
+<body>
+  <section class="vh-100" style="background-color: #eee">
+    <div class="container center-content">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card text-black" style="border-radius: 25px">
+            <div class="card-body p-md-5">
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <h2 class="text-center fw-bold mb-5">To-do list</h2>
+                  <div class="listdiv">
+                    <form ng-submit="addTask()" class="form-inline">
+                      <div class="form-group">
+                        <input type="text" ng-model="task" placeholder="Enter Task" class="form-control" id="taskInput">
+                      </div>
+                      <button type="submit" class="btn btn-primary">Add Task</button>
+                    </form>
+                    <br>
+                    <div ng-repeat="task in filteredTasks track by $index" class="checkbox">
+                      <div class="edit-buttons">
+                        <label>
+                          <input type="checkbox" ng-model="task.status" ng-checked="task.status" ng-click="toggleStatus(task)">
+                          <span class="task" ng-hide="task.editMode">{{task.taskText}}</span>
+                          <span ng-show="task.editMode">
+                            <input type="text" ng-model="task.update" placeholder="{{task.taskText}}" class="form-control input-xs">
+                            <button ng-click="saveEdit(task)" class="btn btn-primary btn-xs">Save</button>
+                            <button ng-click="cancelEdit(task)" class="btn btn-default btn-xs">Cancel</button>
+                          </span>
+                        </label>
+                        <button ng-click="edit(task)" ng-hide="task.editMode || task.status" class="btn btn-default btn-xs">Edit</button>
+                      </div>
+                      <span class="date" ng-if="task.status" ng-show="task.status">Completed at: {{task.checkedTime}}</span>
+                    </div>
+                    <div class="buttonDiv text-center">
+                      <button ng-click="delete()" class="btn btn-danger btn-black">Delete</button>
+                      <button ng-click="complete()" class="btn btn-success btn-black">Complete</button>
+                      <button ng-click="logOut()" class="btn btn-primary btn-black">Log Out</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 d-flex align-items-center">
+                  <img src="media/register.png" class="img-fluid" alt="Sample image" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </body>
+  </section>
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</body>
 </html>
