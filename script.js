@@ -1,9 +1,7 @@
 var myApp = angular.module("myApp", ["ui.router"]);
 var loginId;
 
-myApp.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
-  $urlRouterProvider.otherwise("/");
-
+myApp.config(function ($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state("login", {
       url: "/login",
@@ -15,21 +13,15 @@ myApp.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
       templateUrl: "todo.html",
       controller: "todoController",
     })
-    .state("/", {
-      url: "/",
-      templateUrl: "register.html",
-      controller: "registerController",
-    })
     .state("register", {
       url: "/register",
       templateUrl: "register.html",
       controller: "registerController",
     });
 
-  $locationProvider.html5Mode({
-    enabled: true,
-    requireBase: false,
-  });
+  $urlRouterProvider.otherwise("/register");
+
+  // $locationProvider.html5Mode(true);
 });
 
 myApp.controller("registerController", [
@@ -37,7 +29,7 @@ myApp.controller("registerController", [
   "$http",
   "$state",
   "$window",
-  function ($scope, $http, $state, $window) {
+  function ($scope, $http, $state, $window, SweetAlert) {
     $scope.formData = {};
 
     $scope.submitForm = function () {
@@ -70,7 +62,7 @@ myApp.controller("registerController", [
             }
           });
       } else {
-        $window.alert("Password does not match");
+        // SweetAlert.swal("Hello world!");
       }
     };
   },
@@ -98,7 +90,8 @@ myApp.controller("loginController", [
         .post("http://10.21.80.57:8000/api/login/", userLogin)
         .then(function (response) {
           var register = response.data;
-          loginId = register.id;
+          var loginId = register.id;
+          localStorage.setItem("loginID", loginId);
 
           console.log(loginId);
           $state.go("todo");
@@ -118,155 +111,160 @@ myApp.controller("todoController", [
   "$scope",
   "$http",
   "$state",
-  '$window',
-  function ($scope, $http, $window, $state) {
+  "$window",
+  function ($scope, $http, $state, $window) {
     var apiUrl = "http://10.21.80.57:8000/api/todo/";
 
-    Id = loginId.toString();
+    var loginID = localStorage.getItem("loginID");
+    console.log(loginID)
+    if (loginID) {
+      Id = loginID.toString();
 
-    $scope.todolist = [];
+      $scope.todolist = [];
 
-    $http.get(apiUrl, { params: { loginid: Id } }).then(function (response) {
-      const storedTasks = response.data.task;
-      if (storedTasks) {
-        $scope.todolist = storedTasks;
-      }
+      $http.get(apiUrl, { params: { loginid: Id } }).then(function (response) {
+        const storedTasks = response.data.task;
+        if (storedTasks) {
+          $scope.todolist = storedTasks;
+        }
 
-      console.log($scope.todolist);
-      $scope.displayTasks();
-    });
-
-    $scope.displayTasks = function () {
-      $scope.todolist.forEach(function (task) {
-        task.editMode = false;
-      });
-
-      $scope.filteredTasks = $scope.todolist.filter(function (task) {
-        return (
-          task.status === false ||
-          task.status === "false" ||
-          task.status === "true" ||
-          task.status === true
-        );
-      });
-
-      console.log($scope.filteredTasks);
-    };
-
-    $scope.addTask = function () {
-      if (!$scope.task) {
-        $window.alert("Enter task");
-        return;
-      }
-      var newTask = { taskText: $scope.task, status: false, id: loginId };
-
-      $http.post(apiUrl, newTask).then(function (response) {
-        $scope.todolist.push(response.data);
-        console.log(response.data);
         console.log($scope.todolist);
-        $scope.task = "";
         $scope.displayTasks();
-
-        $state.reload();
       });
-    };
 
-    $scope.toggleStatus = function (task) {
-      task.status = !task.status;
-      if (task.status) {
-        task.checkedTime = new Date().toLocaleString();
-      } else {
-        task.checkedTime = "";
-      }
-    };
-
-    $scope.edit = function (task) {
-      if ($scope.editingTask) {
-        $scope.cancelEdit($scope.editingTask);
-      }
-
-      task.editMode = true;
-      $scope.editingTask = task;
-      task.update = task.taskText;
-    };
-
-    $scope.cancelEdit = function (task) {
-      task.editMode = false;
-      task.taskText = task.update;
-      $scope.editingTask = null;
-    };
-
-    $scope.saveEdit = function (task) {
-      if (task.update) {
-        task.taskText = task.update;
-        $http
-          .put(apiUrl, task)
-          .then(function (response) {
-            console.log("Task updated successfully:", response.data);
-            $scope.displayTasks();
-          })
-          .catch(function (error) {
-            console.log("error", error);
-          });
-      } else {
-        $scope.displayTasks();
-      }
-    };
-
-    $scope.delete = function () {
-      var deletedTasks = [];
-      angular.forEach($scope.todolist, function (task) {
-        if (task.status) {
-          if (task.status != "completed") {
-            task.status = "deleted";
-
-            $http
-              .delete(apiUrl, { data: task })
-              .then(function (response) {
-                console.log("deleted");
-              })
-              .catch(function (error) {
-                console.log("error", error);
-              });
-          }
-        }
-        deletedTasks.push(task);
-      });
-      $scope.todolist = deletedTasks;
-      $scope.displayTasks();
-    };
-
-    $scope.complete = function () {
-      var completedTasks = [];
-      angular.forEach($scope.todolist, function (task) {
-        if (task.status) {
-          if (task.status != "deleted") {
-            task.status = "completed";
-
-            $http
-              .delete(apiUrl, { data: task })
-              .then(function (response) {
-                console.log("completed");
-              })
-              .catch(function (error) {
-                console.log("error", error);
-              });
-          }
-        }
-        completedTasks.push(task);
-      });
-      $scope.todolist = completedTasks;
-      $scope.displayTasks();
-    };
-
-    $scope.logOut = function () {
-      $http
-        .post("http://10.21.80.57:8000/api/logout/", { loginid: loginId })
-        .then(function (response) {
-          var register = response.data.message;
-          console.log(register);
-          $state.go("login");
+      $scope.displayTasks = function () {
+        $scope.todolist.forEach(function (task) {
+          task.editMode = false;
         });
-    };
+
+        $scope.filteredTasks = $scope.todolist.filter(function (task) {
+          return (
+            task.status === false ||
+            task.status === "false" ||
+            task.status === "true" ||
+            task.status === true
+          );
+        });
+
+        console.log($scope.filteredTasks);
+      };
+
+      $scope.addTask = function () {
+        if (!$scope.task) {
+          $window.alert("Enter task");
+          return;
+        }
+        var newTask = { taskText: $scope.task, status: false, id: loginId };
+
+        $http.post(apiUrl, newTask).then(function (response) {
+          $scope.todolist.push(response.data);
+
+          $scope.task = "";
+          $scope.displayTasks();
+        });
+      };
+
+      $scope.toggleStatus = function (task) {
+        task.status = !task.status;
+        if (task.status) {
+          task.checkedTime = new Date().toLocaleString();
+        } else {
+          task.checkedTime = "";
+        }
+      };
+
+      $scope.edit = function (task) {
+        if ($scope.editingTask) {
+          $scope.cancelEdit($scope.editingTask);
+        }
+
+        task.editMode = true;
+        $scope.editingTask = task;
+        task.update = task.taskText;
+      };
+
+      $scope.cancelEdit = function (task) {
+        task.editMode = false;
+        task.taskText = task.update;
+        $scope.editingTask = null;
+      };
+
+      $scope.saveEdit = function (task) {
+        if (task.update) {
+          task.taskText = task.update;
+          $http
+            .put(apiUrl, task)
+            .then(function (response) {
+              console.log(task);
+              console.log("Task updated successfully:", response.data);
+              $scope.displayTasks();
+            })
+            .catch(function (error) {
+              console.log("error", error);
+            });
+        } else {
+          $scope.displayTasks();
+        }
+      };
+
+      $scope.delete = function () {
+        var deletedTasks = [];
+        angular.forEach($scope.todolist, function (task) {
+          if (task.status) {
+            if (task.status != "completed") {
+              task.status = "deleted";
+
+              $http
+                .delete(apiUrl, { data: task })
+                .then(function (response) {
+                  console.log("deleted");
+                })
+                .catch(function (error) {
+                  console.log("error", error);
+                });
+            }
+          }
+          deletedTasks.push(task);
+        });
+        $scope.todolist = deletedTasks;
+        $scope.displayTasks();
+      };
+
+      $scope.complete = function () {
+        var completedTasks = [];
+        angular.forEach($scope.todolist, function (task) {
+          if (task.status) {
+            if (task.status != "deleted") {
+              task.status = "completed";
+
+              $http
+                .put(apiUrl, task)
+                .then(function (response) {
+                  console.log("completed");
+                })
+                .catch(function (error) {
+                  console.log("error", error);
+                });
+            }
+          }
+          completedTasks.push(task);
+        });
+        $scope.todolist = completedTasks;
+        $scope.displayTasks();
+      };
+
+      $scope.logOut = function () {
+        $http
+          .post("http://10.21.80.57:8000/api/logout/", { loginid: loginID })
+          .then(function (response) {
+            var register = response.data.message;
+            console.log(register);
+            localStorage.removeItem("loginID");
+            $state.go("login");
+          });
+      };
+    } else {
+      $state.go("login");
+    }
   },
 ]);
