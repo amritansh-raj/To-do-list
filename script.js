@@ -1,6 +1,5 @@
 var myApp = angular.module("myApp", ["ui.router"]);
 var loginId;
-var localData = [];
 
 myApp.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
   $urlRouterProvider.otherwise("/");
@@ -33,9 +32,12 @@ myApp.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
   });
 });
 
-myApp.controller(
-  "registerController",
-  function ($scope, $http, $location, $window) {
+myApp.controller("registerController", [
+  "$scope",
+  "$http",
+  "$state",
+  "$window",
+  function ($scope, $http, $state, $window) {
     $scope.formData = {};
 
     $scope.submitForm = function () {
@@ -58,7 +60,7 @@ myApp.controller(
           .then(function (response) {
             var register = response.data;
             console.log(register);
-            $location.path("/login");
+            $state.go("login");
           })
           .catch(function (error) {
             if (error.data && error.data.message) {
@@ -71,12 +73,15 @@ myApp.controller(
         $window.alert("Password does not match");
       }
     };
-  }
-);
+  },
+]);
 
-myApp.controller(
-  "loginController",
-  function ($scope, $http, $location, $window) {
+myApp.controller("loginController", [
+  "$scope",
+  "$http",
+  "$state",
+  "$window",
+  function ($scope, $http, $state, $window) {
     $scope.loginData = {};
 
     $scope.submitLoginForm = function () {
@@ -96,7 +101,7 @@ myApp.controller(
           loginId = register.id;
 
           console.log(loginId);
-          $location.path("/todo");
+          $state.go("todo");
         })
         .catch(function (error) {
           if (error.data && error.data.message) {
@@ -106,19 +111,22 @@ myApp.controller(
           }
         });
     };
-  }
-);
+  },
+]);
 
-myApp.controller(
-  "todoController",
-  function ($scope, $http, $window, $location) {
+myApp.controller("todoController", [
+  "$scope",
+  "$http",
+  "$state",
+  '$window',
+  function ($scope, $http, $window, $state) {
     var apiUrl = "http://10.21.80.57:8000/api/todo/";
 
-    var Params = { loginid: loginId.toString() };
+    Id = loginId.toString();
 
     $scope.todolist = [];
 
-    $http.get(apiUrl, { params: Params }).then(function (response) {
+    $http.get(apiUrl, { params: { loginid: Id } }).then(function (response) {
       const storedTasks = response.data.task;
       if (storedTasks) {
         $scope.todolist = storedTasks;
@@ -158,6 +166,8 @@ myApp.controller(
         console.log($scope.todolist);
         $scope.task = "";
         $scope.displayTasks();
+
+        $state.reload();
       });
     };
 
@@ -187,38 +197,21 @@ myApp.controller(
     };
 
     $scope.saveEdit = function (task) {
-      if(task.update){
+      if (task.update) {
         task.taskText = task.update;
-      $http
-        .put(apiUrl, task)
-        .then(function (response) {
-          console.log("Task updated successfully:", response.data);
-          $scope.displayTasks();
-        })
-        .catch(function (error) {
-          console.log("error", error);
-        });
-      }else {
+        $http
+          .put(apiUrl, task)
+          .then(function (response) {
+            console.log("Task updated successfully:", response.data);
+            $scope.displayTasks();
+          })
+          .catch(function (error) {
+            console.log("error", error);
+          });
+      } else {
         $scope.displayTasks();
       }
     };
-
-    //   task.editMode = true;
-    //   if (task.update) {
-    //     task.taskText = task.update;
-    //     $http
-    //       .put(apiUrl, task)
-    //       .then(function (response) {
-    //         console.log("Task updated successfully:", response.data);
-    //         $scope.displayTasks();
-    //       })
-    //       .catch(function (error) {
-    //         console.log("error", error);
-    //       });
-    //   } else {
-    //     $scope.displayTasks();
-    //   }
-    // };
 
     $scope.delete = function () {
       var deletedTasks = [];
@@ -272,8 +265,8 @@ myApp.controller(
         .then(function (response) {
           var register = response.data.message;
           console.log(register);
-          $location.path("/login");
+          $state.go("login");
         });
     };
-  }
-);
+  },
+]);
