@@ -3,10 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <title>Document</title>
-  <style src="style.css"></style>
+  <style>
+    .center-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+  </style>
 </head>
 <body>
   <section class="vh-100" style="background-color: #eee">
@@ -16,7 +22,7 @@
           <div class="card text-black" style="border-radius: 25px">
             <div class="card-body p-md-5">
               <div class="row justify-content-center">
-                <div class="col-md-6">
+                <div class="col-md-6 d-flex flex-column">
                   <h2 class="text-center fw-bold mb-5">To-do list</h2>
                   <div class="listdiv">
                     <form ng-submit="addTask()" class="form-inline">
@@ -41,15 +47,15 @@
                       </div>
                       <span class="date" ng-if="task.status" ng-show="task.status">Completed at: {{task.checkedTime}}</span>
                     </div>
-                    <div class="buttonDiv text-center">
-                      <button ng-click="delete()" class="btn btn-danger btn-black">Delete</button>
-                      <button ng-click="complete()" class="btn btn-success btn-black">Complete</button>
-                      <button ng-click="logOut()" class="btn btn-primary btn-black">Log Out</button>
+                    <div class="buttonDiv text-center mt-auto">
+                      <button ng-click="delete()" class="btn btn-primary" style="color: #eee;">Delete</button>
+                      <button ng-click="complete()" class="btn btn-primary">Complete</button>
+                      <button ng-click="logOut()" class="btn btn-primary">Log Out</button>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-6 d-flex align-items-center">
-                  <img src="media/register.png" class="img-fluid" alt="Sample image" />
+                  <img src="media/todo.png" class="img-fluid" alt="Sample image" />
                 </div>
               </div>
             </div>

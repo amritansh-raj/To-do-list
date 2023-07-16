@@ -3,64 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://f  onts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Calligraffitti&family=Inter:wght@500&family=Lobster+Two&family=Oswald&family=Poppins:wght@200;600&family=Sofia&family=Sofia+Sans+Condensed&display=swap"
-      rel="stylesheet"
-    />
     <title>Document</title>
   </head>
   <body>
-    <div class="container">
-      <h2>To-do list</h2>
-      <div class="listdiv">
-        <form ng-submit="addTask()">
-          <input
-            type="text"
-            ng-model="task"
-            placeholder="Enter Task"
-            id="taskInput"
-          />
-          <input type="submit" value="Add Task" id="addTsk" />
-        </form>
-        <br />
-        <div ng-repeat="task in filteredTasks track by $index">
-          <input
-            type="checkbox"
-            ng-model="task.status"
-            ng-checked="task.status"
-            ng-click="toggleStatus(task)"
-            id="t"
-          />
-          <span class="task" ng-hide="task.editMode">{{task.taskText}}</span>
-          <span ng-show="task.editMode">
-            <input
-              type="text"
-              ng-model="task.update"
-              placeholder="{{task.taskText}}"
-              class="edtInp"
-            />
-            <button ng-click="edit(task)" class="svBtn">Save</button>
-          </span>
-          <span class="date" ng-if="task.status" ng-show="task.status"
-            >Completed at: {{task.checkedTime}}</span
-          >
-          <button
-            ng-click="task.editMode = !task.editMode"
-            ng-hide="task.editMode || task.status"
-            class="edtButton"
-          >
-            Edit
-          </button>
-        </div>
-        <div class="buttonDiv">
-          <button ng-click="delete()" class="delButton">Delete</button>
-          <button ng-click="complete()" class="comButton">Completed</button>
-          <button ng-click="logOut()" class="logButton">Log Out</button>
+    <section class="vh-100" style="background-color: #eee">
+      <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-lg-12 col-xl-11">
+            <div class="card text-black" style="border-radius: 25px">
+              <div class="card-body p-md-5">
+                <div class="row justify-content-center">
+                  <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">
+                      Sign up
+                    </p>
+                    <form ng-submit="submitForm()">
+                      <div class="form-floating mb-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          ng-model="formData.name"
+                          placeholder="name@example.com"
+                          id = "username"
+                          required
+                        />
+                        <label for="username">Full name</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input
+                          type="email"
+                          class="form-control"
+                          placeholder="name@example.com"
+                          pattern="^\s*[a-zA-Z0-9_.+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-]+\s*$"
+                          ng-model="formData.email"
+                          id="email"
+                          required
+                        />
+                        <label for="email">Email</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input
+                          type="tel"
+                          class="form-control"
+                          placeholder="name@example.com"
+                          pattern="\s*[1-9]{1}[0-9]{9}\s*"
+                          ng-model="formData.phno"
+                          id="phNo"
+                          required
+                        />
+                        <label for="phNo">Phone no</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input
+                          type="password"
+                          class="form-control"
+                          placeholder="name@example.com"
+                          ng-model="formData.password"
+                          id="pass1"
+                          required
+                        />
+                        <label for="pass1">Password</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input
+                          type="password"
+                          class="form-control"
+                          placeholder="Password"
+                          ng-model="formData.password2"
+                          id = "pass2"
+                          required
+                        />
+                        <label for="pass2">Confirm Password</label>
+                      </div>
+                      <div
+                        class="d-flex justify-content-center mx-4 mb-3 mb-lg-4"
+                      >
+                        <button type="submit" class="btn btn-primary btn-lg">
+                          Register
+                        </button>
+                      </div>
+                    </form>
+                    Already have an account?<a ui-sref="login">login</a>
+                  </div>
+                  <div
+                    class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2"
+                  >
+                    <img
+                      src="media/register.png"
+                      class="img-fluid"
+                      alt="Sample image"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   </body>
 </html>
