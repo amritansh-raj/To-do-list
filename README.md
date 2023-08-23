@@ -27,6 +27,6 @@ This AngularJS To-Do List app is designed to streamline your task management pro
 
 Start organizing your tasks effortlessly today with our AngularJS To-Do List app! Feel free to explore the codebase and contribute to its development on GitHub.
 
-[GitHub Repository Link]([(https://github.com/amritansh-raj/Erp_task6)])
+[GitHub Repository Link]([(https://github.com/amritansh-raj/To-do-list))])
 
 Note: Make sure to run this app on a secure network for the best user experience and data protection.
